@@ -173,17 +173,6 @@ tests/
     └── metrics_results_ore_lags_168_ahead_144_10_min_dl_gate_ml_all.xlsx
 ```
 
-The output folder name is generated from the experiment setup. It includes information such as:
-
-```text
-dataset name
-number of input lags
-number of forecast steps ahead
-data resolution
-model group
-filtering setup
-```
-
 The main result file is an Excel workbook. It stores dataset-level errors, model-level errors, selected hyperparameters, and hyperparameter-search summaries.
 
 Before running an experiment, check that:
@@ -210,15 +199,19 @@ feature_filtering:
   - 'CCF'
 ```
 
-The machine-learning model list is:
+The model list is:
 
 ```yaml
-ml_model:
+model:
   - 'naive'
   - 'linear_regression'
   - 'random_forest'
   - 'elm'
   - 'xgboost'
+  - 'lightgbm'
+  - 'catboost'
+  - 'gradient_boosted_decision_trees'
+  - 'version_extreme_random_forest' 
 ```
 
 The deep-learning model list is:
@@ -234,8 +227,6 @@ deep_model:
   - 'tcn'
   - 'ffnn'
 ```
-
-Some additional models may be present in the file but commented out. They can be reactivated after checking package compatibility and runtime requirements.
 
 ### `config/model_config.yaml`
 
@@ -294,42 +285,6 @@ training:
 ```
 
 The default configuration may be computationally heavy. Full experiments should use the intended thesis-scale configuration. Quick tests should use smaller values.
-
-## Input data format
-
-The pipeline expects a prepared pickle file with a dictionary structure:
-
-```python
-{
-    "data": pandas.DataFrame,
-    "metadata": {
-        "input_features": [...],
-        "output_variable": "..."
-    }
-}
-```
-
-The DataFrame index must be datetime-like. The input features must be columns in the DataFrame. The output variable must also be a column in the DataFrame.
-
-Example:
-
-```python
-metadata = {
-    "input_features": ["wind_speed", "wind_direction", "temperature"],
-    "output_variable": "active_power"
-}
-```
-
-For a univariate setup, the input feature list can contain only the generated power or energy signal:
-
-```python
-metadata = {
-    "input_features": ["active_power"],
-    "output_variable": "active_power"
-}
-```
-
-The code adds the output variable to the input feature list when it is missing. This keeps the historical output signal available for lagged forecasting.
 
 ## Pipeline steps
 
