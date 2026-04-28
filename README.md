@@ -8,7 +8,7 @@ Warsaw University of Technology, 2026
 
 The code implements a SCADA-only time-series forecasting pipeline for wind and solar power generation. The pipeline is designed for cases where only on-site operational measurements are available. It includes data loading, missing-data treatment, output normalisation, lagged sequence construction, lag-feature selection, model training, and deterministic error evaluation.
 
-The main way to run the project is through the Dash interface defined in `app.py`.
+The project is intended to be run through the Dash interface defined in `app.py`.
 
 ## Research context
 
@@ -23,9 +23,9 @@ The core methodological component is a gated lag-feature selection mechanism. It
 ```text
 lag-feature-selection-gate/
 │
-├── app.py                  # Main Dash interface for running the pipeline
-├── main.py                 # Core forecasting pipeline
-├── run_all.py              # Batch execution over configured models
+├── app.py                  # Dash interface used to run the project
+├── main.py                 # Core forecasting pipeline called by the interface
+├── run_all.py              # Experiment runner used internally by the pipeline workflow
 ├── requirements.txt        # Python dependencies
 │
 ├── code_ai/                # Data treatment, feature engineering, models, metrics, plots
@@ -77,9 +77,9 @@ Install the required packages:
 pip install -r requirements.txt
 ```
 
-## Running the interface
+## Running the project
 
-The intended way to run the project is through the Dash application:
+Run the Dash application:
 
 ```bash
 python app.py
@@ -91,33 +91,7 @@ After starting the app, open the local address printed in the terminal. In most 
 http://127.0.0.1:8050
 ```
 
-## Running all configured models
-
-To run all models listed in the configuration file:
-
-```bash
-python run_all.py
-```
-
-This script loops over the models defined in `config/config.yaml`. It runs the forecasting pipeline for each model and saves metrics and hyperparameter summaries to an Excel file.
-
-The output directory is created under:
-
-```text
-tests/
-```
-
-The generated folder name includes the number of input lags, forecast steps ahead, data resolution, and selected filtering setup. The Excel file is saved inside that folder.
-
-Example output structure:
-
-```text
-tests/
-└── metrics_results_ore_lags_168_ahead_144_10_min_dl_gate_ml_all/
-    └── metrics_results_ore_lags_168_ahead_144_10_min_dl_gate_ml_all.xlsx
-```
-
-The Excel workbook contains sheets for dataset error metrics, model error metrics, selected hyperparameters, and hyperparameter search summaries.
+The interface is the entry point for the project. It is used to select the renewable-energy case, choose the dataset, configure the model and filtering method, and start the forecasting workflow.
 
 ## Configuration files
 
@@ -127,11 +101,103 @@ The configuration files are stored in:
 config/
 ```
 
-These files control the hyperparameter configuration, model lists, dataset paths, filtering options, and forecasting setup.
+These files define the dataset paths, result paths, model lists, feature-filtering options, forecasting setup, and hyperparameter search space.
+
+There are two main configuration files:
+
+```text
+config/config.yaml
+config/model_config.yaml
+```
+
+### Dataset and output paths
+
+Dataset and result locations are configured in `config/config.yaml`.
+
+The dataset path points to the directory where the prepared input datasets are stored. The pipeline expects prepared `.pkl` files in this directory.
+
+Example:
+
+```yaml
+datasets:
+  inserted_datasets_dir: "../data/inserted_datasets"
+```
+
+This path is relative to the repository root. With the example above, the expected directory structure is:
+
+```text
+parent-folder/
+│
+├── data/
+│   └── inserted_datasets/
+│       ├── dataset_1.pkl
+│       ├── dataset_2.pkl
+│       └── ...
+│
+└── lag-feature-selection-gate/
+    ├── app.py
+    ├── config/
+    └── ...
+```
+
+If the datasets are stored inside the repository, the path can be changed to:
+
+```yaml
+datasets:
+  inserted_datasets_dir: "data/inserted_datasets"
+```
+
+Then the expected structure becomes:
+
+```text
+lag-feature-selection-gate/
+│
+├── data/
+│   └── inserted_datasets/
+│       ├── dataset_1.pkl
+│       ├── dataset_2.pkl
+│       └── ...
+│
+├── app.py
+├── config/
+└── ...
+```
+
+The results are saved under the `tests/` directory. This directory is used as the experiment-output location, not as a unit-test folder.
+
+Example output path:
+
+```text
+tests/
+└── metrics_results_ore_lags_168_ahead_144_10_min_dl_gate_ml_all/
+    └── metrics_results_ore_lags_168_ahead_144_10_min_dl_gate_ml_all.xlsx
+```
+
+The output folder name is generated from the experiment setup. It includes information such as:
+
+```text
+dataset name
+number of input lags
+number of forecast steps ahead
+data resolution
+model group
+filtering setup
+```
+
+The main result file is an Excel workbook. It stores dataset-level errors, model-level errors, selected hyperparameters, and hyperparameter-search summaries.
+
+Before running an experiment, check that:
+
+```text
+1. the dataset directory exists;
+2. the selected .pkl files are inside the dataset directory;
+3. the output directory tests/ exists or can be created by Python;
+4. the repository has write permission for the tests/ directory.
+```
 
 ### `config/config.yaml`
 
-This file defines available pipeline choices, including datasets, preprocessing methods, feature-filtering methods, and model lists.
+This file defines available pipeline choices, dataset paths, filtering methods, and model lists.
 
 The feature-filtering options are:
 
@@ -185,7 +251,21 @@ prediction_config:
 
 For 10-minute data, this corresponds to 168 input time steps and 144 forecast steps ahead.
 
-The same file also defines train, validation, trial, and test sizes; number of Optuna trials; trial and final training epochs; early-stopping patience; batch-size options; random seed; lag-gate hyperparameters; model-size ranges; optimiser settings; learning-rate schedule; and Optuna pruning settings.
+The same file also defines:
+
+```text
+train, validation, trial, and test sizes
+number of Optuna trials
+trial and final training epochs
+early-stopping patience
+batch-size options
+random seed
+lag-gate hyperparameters
+model-size ranges
+optimiser settings
+learning-rate schedule
+Optuna pruning settings
+```
 
 To change the forecast horizon, edit:
 
@@ -253,7 +333,7 @@ The code adds the output variable to the input feature list when it is missing. 
 
 ## Pipeline steps
 
-The main pipeline is implemented in `main.py`.
+The main pipeline is implemented in `main.py` and called from the Dash interface.
 
 The training procedure follows these steps:
 
@@ -273,7 +353,7 @@ The training procedure follows these steps:
 14. Produce direct multi-step forecasts.
 15. Inverse-transform predictions.
 16. Compute per-step and averaged deterministic error metrics.
-17. Save or return metrics, selected features, and hyperparameters.
+17. Save metrics, selected features, and hyperparameters in the output directory.
 
 ## Lag-feature selection
 
@@ -345,7 +425,7 @@ The test predictions are inverse-transformed before final dataset-level evaluati
 
 ## Output files
 
-Results from batch execution are saved in:
+Results are saved in:
 
 ```text
 tests/
@@ -361,7 +441,7 @@ Model Error
 Hyperparameters
 ```
 
-Each model is appended to the same workbook during `run_all.py`.
+Each experiment writes its results to a subfolder inside `tests/`.
 
 ## Reproducibility notes
 
