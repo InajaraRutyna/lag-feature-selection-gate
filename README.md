@@ -216,7 +216,6 @@ tests/
     ├── lstm_predictions.png
     ├── logits.png
     ├── logits_1.png
-    └── correlation_map.png
 ```
 
 The exact files depend on the selected models and filtering method.
@@ -256,14 +255,12 @@ Typical filtering figures include:
 ```text
 logits.png
 logits_1.png
-correlation_map.png
 ```
 
 `logits.png` is used for binary lag-feature masks.
 
 `logits_1.png` is used for continuous lag-feature score maps.
 
-`correlation_map.png` is used when the filtering output is stored as a correlation-style map.
 
 Not every experiment creates all filtering figures. A run with `Full` filtering may produce prediction figures but no lag-feature filtering map.
 
@@ -480,7 +477,7 @@ experiment-output-folder/
 ├── <model_name>_predictions.png
 ├── logits.png
 ├── logits_1.png
-└── correlation_map.png
+
 ```
 
 The Excel workbook stores numerical metrics and hyperparameter information. The `.png` files store the capacity plot, prediction plots, and lag-feature filtering maps generated during the run.

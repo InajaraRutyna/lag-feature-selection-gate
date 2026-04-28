@@ -126,34 +126,54 @@ def compute_model_metrics_per_step(train_error, validation_error, class_, train_
 
 def compute_dataset_metrics_per_step(y_true, y_pred, average_dataset_error, dataset_metrics, cl):
     """
-    Compute dataset error metrics (NRMSE, NMAE) for each step ahead.
+    Compute dataset error metrics for each forecast step.
 
     Parameters:
-    - y_true (np.ndarray): True values with shape [samples, steps_ahead].
-    - y_pred (np.ndarray): Predicted values with shape [samples, steps_ahead].
-
-    Returns:
-    - dataset_metrics (dict): Dictionary containing dataset errors per step.
+    - y_true: true values with shape [samples, steps_ahead]
+    - y_pred: predicted values with shape [samples, steps_ahead]
+    - average_dataset_error: dataframe storing averaged errors
+    - dataset_metrics: dataframe storing per-step errors
+    - cl: class/model label used in the result tables
     """
-    # y_true = y_true / capacity_test[:, np.newaxis]
-    # y_pred = y_pred / capacity_test[:, np.newaxis]
+
+    rows = []
+
     for step in range(sv.STEPS_AHEAD):
         y_true_step = y_true[:, step]
         y_pred_step = y_pred[:, step]
 
         evaluator = RegressionMetric(y_true_step, y_pred_step)
+
         nrmse = evaluator.RMSE()
         nmae = evaluator.MAE()
         nmbe = evaluator.MBE()
-        dataset_metrics = dataset_metrics._append({'class': cl, 'step': step + 1,'nrmse':nrmse, 'nmae':nmae, 'nmbe':nmbe}, ignore_index=True)
 
-    # Store average dataset error metrics
-    average_dataset_error = average_dataset_error._append({
+        rows.append({
+            'class': cl,
+            'step': step + 1,
+            'nrmse': nrmse,
+            'nmae': nmae,
+            'nmbe': nmbe
+        })
+
+    new_metrics = pd.DataFrame(rows)
+
+    dataset_metrics = pd.concat(
+        [dataset_metrics, new_metrics],
+        ignore_index=True
+    )
+
+    average_row = pd.DataFrame([{
         'class': cl,
-        'Avg NRMSE': np.average(dataset_metrics.loc[dataset_metrics['class'] == cl, 'nrmse']),
-        'Avg NMAE': np.average(dataset_metrics.loc[dataset_metrics['class'] == cl, 'nmae']),
-        'Avg NMBE': np.average(dataset_metrics.loc[dataset_metrics['class'] == cl, 'nmbe'])
-    }, ignore_index=True)
+        'Avg NRMSE': new_metrics['nrmse'].mean(),
+        'Avg NMAE': new_metrics['nmae'].mean(),
+        'Avg NMBE': new_metrics['nmbe'].mean()
+    }])
+
+    average_dataset_error = pd.concat(
+        [average_dataset_error, average_row],
+        ignore_index=True
+    )
 
     return average_dataset_error, dataset_metrics
 
