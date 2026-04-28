@@ -389,7 +389,17 @@ For each selected model, the pipeline:
 26. Saves generated figures in the experiment-output folder.
 27. Returns metrics, selected lag-feature information, best hyperparameters, and hyperparameter-search summaries.
 
+#### Evaluation metrics
 
+The pipeline reports deterministic errors on the normalized forecasting target:
+
+```text
+nRMSE
+nMAE
+nMBE
+```
+
+Errors are computed per forecast step and as averages across the full forecast horizon.
 ## Result paths and generated figures
 
 Experiment results are saved under:
@@ -466,20 +476,6 @@ Not every experiment creates all filtering figures. A run with `Full` filtering 
 
 
 These figures are loaded by `app.py` and displayed in the interface.
-
-
-
-## Evaluation metrics
-
-The pipeline reports deterministic errors on the normalized forecasting target:
-
-```text
-nRMSE
-nMAE
-nMBE
-```
-
-Errors are computed per forecast step and as averages across the full forecast horizon.
 
 
 ## Reproducibility notes
