@@ -16,4 +16,5 @@ psutil
 torch
 vmdpy
 pypots
-PyWavelets
+pywavelets
+loguru

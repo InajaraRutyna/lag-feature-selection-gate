@@ -15,13 +15,6 @@ imputation_methods:
   - "CSDI"
   - "SAITS"
 
-features_creation:
-  - 'None'
-  - 'stft'
-  - 'vmd'
-  - 'wavelet'
-#  - 'emd'
-
 feature_filtering:
   - 'Full'
   - 'Gate'

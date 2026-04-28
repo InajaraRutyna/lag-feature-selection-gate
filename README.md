@@ -267,17 +267,6 @@ correlation_map.png
 
 Not every experiment creates all filtering figures. A run with `Full` filtering may produce prediction figures but no lag-feature filtering map.
 
-## Static interface figures
-
-The `fig/` folder stores static images used by the Dash interface. These are not experiment results.
-
-The interface uses figures such as:
-
-```text
-fig/Wind.png
-fig/Solar.png
-fig/Train.png
-```
 
 These figures are loaded by `app.py` and displayed in the interface.
 
@@ -305,15 +294,6 @@ imputation_methods:
   - "SAITS"
 ```
 
-The feature-creation options are:
-
-```yaml
-features_creation:
-  - 'None'
-  - 'stft'
-  - 'vmd'
-  - 'wavelet'
-```
 
 The feature-filtering options are:
 
@@ -335,6 +315,10 @@ ml_model:
   - 'random_forest'
   - 'elm'
   - 'xgboost'
+  - 'lightgbm' 
+  - 'catboost' 
+  - 'gradient_boosted_decision_trees'
+  - 'version_extreme_random_forest' 
 ```
 
 The active deep-learning model list is:
@@ -351,9 +335,8 @@ deep_model:
   - 'ffnn'
 ```
 
-The Dash interface combines the machine-learning and deep-learning model lists into the visible model-selection workflow.
 
-Some additional model names may be present in the configuration file as commented entries. They are not active unless they are uncommented and the corresponding model code and dependencies are available.
+The Dash interface combines the machine-learning and deep-learning model lists into the visible model-selection workflow. The separate lists are used to identify models that depend on sequential data and models that do not.
 
 ## `config/model_config.yaml`
 
@@ -414,60 +397,6 @@ training:
 
 The default configuration may be computationally heavy. Full experiments should use the intended thesis-scale configuration. Quick tests should use smaller values.
 
-## Input data format
-
-The pipeline expects a prepared pickle file with a dictionary structure:
-
-```python
-{
-    "data": pandas.DataFrame,
-    "metadata": {
-        "input_features": [...],
-        "output_variable": "..."
-    }
-}
-```
-
-The DataFrame index must be datetime-like. The input features must be columns in the DataFrame. The output variable must also be a column in the DataFrame.
-
-Example:
-
-```python
-metadata = {
-    "input_features": ["wind_speed", "wind_direction", "temperature"],
-    "output_variable": "active_power"
-}
-```
-
-For a univariate setup, the input feature list can contain only the generated power or energy signal:
-
-```python
-metadata = {
-    "input_features": ["active_power"],
-    "output_variable": "active_power"
-}
-```
-
-The interface can add additional metadata fields during dataset preparation. These fields store variable selections, categorical treatment choices, feature-creation settings, filtering method, and selected models.
-
-A processed file may therefore contain metadata similar to:
-
-```python
-{
-    "data": pandas.DataFrame,
-    "metadata": {
-        "categorized_variables": [...],
-        "excluded_variables": [...],
-        "categorization_method": "...",
-        "input_features": [...],
-        "output_variable": "...",
-        "features_creation": "...",
-        "feature_filtering": "...",
-        "classification_method": "...",
-        "model": [...]
-    }
-}
-```
 
 ## Pipeline steps
 
@@ -487,10 +416,9 @@ During this stage, the interface:
 4. Lets the user categorize or exclude non-numeric columns.
 5. Lets the user select input features.
 6. Lets the user select the output variable.
-7. Lets the user select the feature-creation method.
-8. Lets the user select the feature-filtering method.
-9. Lets the user select one or more forecasting models.
-10. Saves the processed dataset and metadata as a `.pkl` file.
+7. Lets the user select the feature-filtering method.
+8. Lets the user select one or more forecasting models.
+9. Saves the processed dataset and metadata as a `.pkl` file.
 
 The saved `.pkl` file is stored in the directory configured by:
 
@@ -537,77 +465,6 @@ For each selected model, the pipeline:
 
 After each model finishes, the interface writes the returned results to an Excel workbook in the experiment-output folder.
 
-The output folder is created under:
-
-```text
-tests/
-```
-
-Generated figures are stored in the same experiment-output folder when the plotting routines are called.
-
-## Lag-feature selection
-
-The repository supports several input-selection modes.
-
-`Full` keeps the complete lag-feature representation.
-
-`Gate` applies the gated lag-feature selection mechanism.
-
-`Pearson` applies correlation-based filtering.
-
-`MI` applies mutual-information-based filtering.
-
-`CCF` applies cross-correlation-based filtering.
-
-The selected lag-feature mask is applied before model training. For non-sequential models, the retained lag-feature tensor is flattened. For sequence models, the lag-feature structure is preserved.
-
-## Models
-
-The code supports classical machine-learning models and deep-learning sequence models.
-
-The active model list is controlled through:
-
-```text
-config/config.yaml
-```
-
-The active classical models are:
-
-```text
-naive
-linear_regression
-random_forest
-elm
-xgboost
-```
-
-The active deep-learning models are:
-
-```text
-lstm
-cnn
-rnn
-cnn_rnn
-cnn_lstm
-gru
-tcn
-ffnn
-```
-
-## Evaluation metrics
-
-The pipeline reports deterministic errors on the normalized forecasting target:
-
-```text
-nRMSE
-nMAE
-nMBE
-```
-
-Errors are computed per forecast step and as averages across the full forecast horizon.
-
-## Output files
-
 Each experiment writes outputs to a subfolder inside:
 
 ```text
@@ -630,11 +487,39 @@ The Excel workbook stores numerical metrics and hyperparameter information. The 
 
 Not every run creates every figure. The saved figures depend on the selected model, selected filtering method, and whether the corresponding plotting function is called.
 
+## Lag-feature selection
+
+The repository supports several input-selection modes.
+
+`Full` keeps the complete lag-feature representation.
+
+`Gate` applies the gated lag-feature selection mechanism.
+
+`Pearson` applies correlation-based filtering.
+
+`MI` applies mutual-information-based filtering.
+
+`CCF` applies cross-correlation-based filtering.
+
+The selected lag-feature mask is applied before model training. For non-sequential models, the retained lag-feature tensor is flattened. For sequence models, the lag-feature structure is preserved.
+
+
+## Evaluation metrics
+
+The pipeline reports deterministic errors on the normalized forecasting target:
+
+```text
+nRMSE
+nMAE
+nMBE
+```
+
+Errors are computed per forecast step and as averages across the full forecast horizon.
+
+
 ## Reproducibility notes
 
 This repository contains the implementation of the forecasting pipeline. Reproducing the thesis experiments also depends on access to the prepared wind and solar datasets, matching input metadata, selected configuration files, the Python environment, package versions, and local CPU or GPU availability.
-
-Some datasets or trained outputs may be absent from the public repository because of data-access restrictions or file size.
 
 ## Citation
 
