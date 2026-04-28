@@ -1,0 +1,120 @@
+/* General body settings */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;  /* Prevent scrolling the whole page */
+}
+
+/* Main content */
+.main-content {
+    background-color: #28303B;
+    height: 100vh;  /* Full height */
+    padding: 20px;
+    overflow-y: hidden;
+    overflow-x: hidden;
+    color: white;
+    font-size: 20px;
+    position: relative;  /* Add this to position the top-right image correctly */
+}
+
+/* App content layout */
+.app-content {
+    height: 100vh;
+    width: 100vw;
+    background-color: #28303B;
+    display: flex;  /* Ensures flex behavior between sidebar and content */
+}
+
+/* Sidebar */
+.sidebar {
+    background-color: #1C2129;
+    font-size: 20px;
+    height: 100%;  /* Full height */
+    padding: 10px;
+    position: relative;
+}
+/* Smaller header for the title */
+.sidebar .display-5 {
+    font-size: 30px;  /* Adjust the font size */
+    font-weight: 600;
+    color: white;
+    margin-bottom: 40px;
+    margin-top: 40px;
+}
+
+/* Center the images in the sidebar */
+.sidebar-image {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 200px;
+    margin-bottom: 20px;
+    margin-top: 140px;
+}
+
+/* Footer in the sidebar */
+.sidebar-footer {
+    text-align: center;
+    color: white;
+    font-size: 18px;
+    padding: 10px;
+    margin-top: auto;
+    font-size: 20px;
+    background-color: #1C2129;
+}
+/* Custom radio styling */
+.custom-radio {
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #28303B;
+    color: white;
+    border-radius: 20px;
+    margin-right: 20px;
+}
+/* Add space between radio button and label text */
+.custom-radio input[type="radio"] {
+    margin-right: 15px;
+}
+/* Adjust the label to push it further right */
+.custom-radio label {
+    padding-left: 25px;
+    color: white;
+    vertical-align: middle;
+}
+.top-right-image {
+    position: absolute;
+    top: 20px;       /* Adjust the top spacing */
+    right: 20px;     /* Adjust the right spacing */
+    width: 650px;    /* Set the image width */
+    height: auto;    /* Ensure the aspect ratio is maintained */
+    z-index: 10;     /* Ensure it's on top of other elements */
+}
+/* Header Styles */
+.header {
+    font-size: 50px;
+    font-weight: bold;
+    color: white;
+    padding: 10px 0;
+    margin-bottom: 20px;
+}
+
+.subheader {
+    font-size: 22px;
+    color: #ccc;
+    margin-bottom: 10px;
+    padding-right: 700px;
+}
+
+/* Container for headers and content */
+.header-container {
+    margin-bottom: 5px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #444;
+}
+/* General button styling */
+.button {
+    margin: 10px;
+}
+

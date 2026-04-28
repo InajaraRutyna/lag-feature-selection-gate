@@ -1,0 +1,50 @@
+datasets:
+  raw_datasets_dir: "../data/raw_datasets"
+  inserted_datasets_dir: "../data/inserted_datasets"
+  plots_dir: "graphs/"
+
+categorical_methods:
+  - 'onehot'
+  - 'label'
+  - 'ordinal'
+  - 'binary'
+  - 'frequency'
+  - 'exclude_all'
+
+imputation_methods:
+  - "CSDI"
+  - "SAITS"
+
+features_creation:
+  - 'None'
+  - 'stft'
+  - 'vmd'
+  - 'wavelet'
+#  - 'emd'
+
+feature_filtering:
+  - 'Full'
+  - 'Gate'
+  - 'Pearson'
+  - "MI"
+  - "CCF"
+
+ml_model:
+  - 'naive'
+  - 'linear_regression'
+  - 'random_forest'
+  - 'elm'
+  - 'xgboost' #
+  - 'lightgbm' #
+  - 'catboost' #
+  - 'gradient_boosted_decision_trees'#
+  - 'version_extreme_random_forest' #
+deep_model:
+  - 'lstm'
+  - 'cnn'
+  - 'rnn'
+  - 'cnn_rnn'
+  - 'cnn_lstm'
+  - 'gru'
+  - 'tcn'
+  - 'ffnn' # fix for sk

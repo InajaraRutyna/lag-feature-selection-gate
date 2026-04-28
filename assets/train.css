@@ -1,0 +1,354 @@
+/* train.css */
+
+/* General styles to match the main application's color palette */
+/* Dropdown container */
+.dropdown-container_t {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+/* Headers */
+.header_1 {
+    color: white;
+    font-size: 26px;
+    margin-bottom: 15px;
+    font-weight: bold;
+    padding: 10px 0;
+}
+
+.subheader, .subheader_1 {
+    color: #bdc3c7;
+    font-size: 18px;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+/* Dropdown styling */
+.dropdown_t {
+    width: 100%;
+    margin-bottom: 20px;
+    display: block;  /* Allow alignment with labels */
+    vertical-align: top;
+}
+
+.dropdown_larger_t {
+    width: 100%;  /* Full width for larger dropdowns */
+    margin-bottom: 20px;
+    display: block;  /* Allow alignment with labels */
+    vertical-align: top;
+}
+
+/* Select Control Styling */
+.Select-control {
+    background-color: #1C2129 !important;
+    color: #ecf0f1 !important;
+    border-color: #444 !important;
+    border-radius: 5px !important;
+    padding: 10px;
+}
+
+.Select-placeholder {
+    color: #bdc3c7 !important;
+}
+
+.Select-menu-outer {
+    background-color: #1C2129 !important;
+    color: #ecf0f1 !important;
+}
+
+.Select-option.is-focused {
+    background-color: #28303B !important;
+}
+
+.Select-option.is-selected {
+    background-color: #375A7F !important;
+}
+
+/* Dataframe info and head styling */
+.dataframe-info, .dataframe-head {
+    background-color: #1C2129;
+    color: #ecf0f1;
+    padding: 25px;
+    border-radius: 8px;
+    margin: 10px 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.dataframe-info h5, .dataframe-head h5 {
+    color: #ecf0f1;
+    margin-bottom: 10px;
+    font-size: 22px;
+}
+
+/* Loading spinner */
+.dccLoading {
+    margin-top: 20px;
+}
+
+/* App content layout */
+.app-content_t {
+    background-color: #28303B;
+    display: flex;
+    flex-direction: column;
+    height: 85vh;
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Adjust margins and paddings for better spacing */
+.dash-spreadsheet-container {
+    margin: 50px;
+}
+
+/* Styling for the scrolling container in the train mode */
+.train-mode-content {
+    max-height: 800px; /* Set maximum height for the container */
+    overflow-y: auto; /* Enable vertical scrolling */
+    overflow-x: hidden; /* Optional: hide horizontal scroll */
+    background-color: #28303B; /* Match background color with your theme */
+    padding: 25px; /* Add padding for inner content */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3); /* Subtle shadow */
+    scrollbar-width: thin; /* Make the scrollbar thinner */
+    scrollbar-color: #888 #2a2f37;
+    height: 100%;
+    width: 100%;
+}
+
+.train-mode-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.train-mode-content::-webkit-scrollbar-track {
+    background: #2a2f37;
+    border-radius: 4px;
+}
+
+.train-mode-content::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 4px;
+    border: 2px solid #2a2f37;
+}
+
+/* Table header styling */
+.table-header {
+    background-color: #1C2129; /* Dark background for header */
+    font-weight: bold;
+    padding: 12px; /* Padding for the header cells */
+    border-bottom: 2px solid #ccc; /* Bottom border for header */
+    border-top: 2px solid #ccc; /* Top border for header */
+    font-size: 24px;
+}
+
+/* Table row styling */
+.table-row {
+    padding: 12px 0; /* Padding for each row */
+    border-bottom: 1px solid #444; /* Dark border between rows */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 22px;
+}
+
+.table_row:hover {
+    background-color: #34495e;
+}
+
+/* Table Info Styling */
+.table_info_t {
+    background-color: #28303B;
+    white-space: nowrap;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.table_info_t th, .table_info_t td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #444;
+    color: #ecf0f1;
+    font-size: 18px;
+}
+.table_info_t th {
+    background-color: #1C2129;
+}
+.table_info_t td {
+    background-color: #1C2129;
+    font-size: 16px;
+}
+
+/* Styling for even rows */
+.table_info_t tr:nth-child(odd) td {
+    background-color: #313947; /* Desired background color for odd rows */
+}
+
+.table_info_t tr:hover td {
+    background-color: #3c5971; /* Highlight on hover */
+}
+
+/* Input box styling */
+.file-name-input_t {
+    width: 300px; /* Adjust the width as needed */
+    padding: 10px;
+    margin-right: 15px; /* Space between input and button */
+    background-color: #1C2129; /* Match the theme */
+    color: #ffffff;
+    border: 1px solid #444;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+/* Save button styling */
+.save-button_t {
+    padding: 10px 25px;
+    background-color: #375A7F;
+    border-color: #375A7F;
+    color: #ffffff;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 16px;
+}
+
+.save-button_t:hover {
+    background-color: #375A7F;
+    border-color: #375A7F;
+}
+
+/* Save container styling */
+.save-container_t {
+    margin-top: 15px; /* Space above the save section */
+    align-items: center;
+    margin-left: 45vw;  /* Pushes the button to the right */
+    right: 20px;
+    display: flex;
+}
+
+/* Custom radio button styling */
+.custom-radio_t {
+    display: flex;                /* Establishes flex container */
+    flex-direction: row;          /* Aligns items horizontally */
+    align-items: center;          /* Vertically centers the radio buttons */
+    margin-bottom: 10px;
+}
+
+/* Custom class to enlarge radio buttons */
+.custom-radio_t input[type="radio"] {
+    margin-right: 15px;                  /* Spacing between radio and label */
+    vertical-align: middle;              /* Aligns vertically with text */
+    cursor: pointer;
+    width: 20px; /* Adjust size */
+    height: 20px; /* Adjust size */
+   /* transform: scale(1.5);       */       /* Scales the radio button */
+}
+
+/* Checkbox Styling */
+.select-all-checkbox .form-check-input:checked {
+    background-color: #375A7F;
+    border-color: #375A7F;
+}
+
+.select-all-checkbox .form-check-input:focus {
+    box-shadow: none;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .dropdown-container_t {
+        width: 100%;
+    }
+
+    .header_1 {
+        font-size: 24px;
+    }
+
+    .subheader, .subheader_1 {
+        font-size: 16px;
+    }
+
+    .table_info_t th, .table_info_t td {
+        padding: 10px 12px;
+        font-size: 14px;
+    }
+
+    .file-name-input_t {
+        width: 250px;
+    }
+}
+
+@media (max-width: 768px) {
+    .train-mode-content {
+        max-height: none; /* Remove max-height for smaller screens */
+    }
+
+    .header_1 {
+        font-size: 20px;
+    }
+
+    .subheader, .subheader_1 {
+        font-size: 14px;
+    }
+
+    .table-header {
+        font-size: 16px;
+    }
+
+    .table_info_t th, .table_info_t td {
+        padding: 8px 10px;
+        font-size: 14px;
+    }
+
+    .file-name-input_t {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .save-container_t {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .save-button_t {
+        width: 100%;
+    }
+}
+.feature-checklist{
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #28303B;
+    color: white;
+    border-radius: 20px;
+    margin-right: 20px;
+}
+/* Add space between radio button and label text */
+.feature-checklist input[type="checkbox"] {
+    margin-right: 15px;
+    width: 20px; /* Adjust size */
+    height: 20px; /* Adjust size */
+}
+.output-radio {
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #28303B;
+    color: white;
+    border-radius: 20px;
+    margin-right: 20px;
+}
+/* Add space between radio button and label text */
+.output-radio input[type="radio"] {
+    margin-right: 15px;
+    width: 20px; /* Adjust size */
+    height: 20px; /* Adjust size */
+}
+.confirm-button{
+    margin-right: auto;  /* Pushes the button to the right */
+    display: block;      /* Ensures the margin works */
+    background-color: #375A7F;
+    border-color: #375A7F;
+}
+.header_2 {
+    text-decoration: underline
+}
