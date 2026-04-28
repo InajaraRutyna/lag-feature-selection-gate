@@ -14,9 +14,8 @@ The project is intended to be run through the Dash interface defined in `app.py`
 
 Wind and solar forecasting models are often developed with a combination of SCADA measurements and Numerical Weather Prediction (NWP) data. In many operational settings, NWP inputs are not available. The forecasting model must then use only historical measurements collected at the installation site.
 
-This repository focuses on the SCADA-only case. The lagged input representation becomes the main source of predictive information. Missing values, sensor noise, inconsistent sampling, and redundant lag-feature combinations must be treated before model training.
-
-The core methodological component is a gated lag-feature selection mechanism. It selects temporal lags and measured signals from SCADA windows during model training. The selected representation is then passed to machine-learning or deep-learning forecasting models.
+This repository focuses on the SCADA-only case. The lagged input representation becomes the main source of predictive information. 
+The core methodological component is a gated lag-feature selection mechanism. It selects temporal lags and measured signals from SCADA windows during model training. The selected representation is then passed to forecasting models.
 
 ## Repository structure
 
@@ -113,6 +112,133 @@ config/model_config.yaml
 `config/config.yaml` defines dataset paths, interface-level choices, categorical treatment methods, feature-filtering methods, and model lists.
 
 `config/model_config.yaml` defines the forecasting setup and training configuration. It includes the number of input lags, number of forecast steps ahead, train-validation-test split sizes, Optuna settings, model hyperparameter ranges, and lag-gate settings.
+
+# `config/config.yaml`
+
+This file defines available pipeline choices, dataset paths, categorical treatment methods, imputation methods, feature-creation options, feature-filtering methods, and model lists.
+
+The categorical treatment options are:
+
+```yaml
+categorical_methods:
+  - 'onehot'
+  - 'label'
+  - 'ordinal'
+  - 'binary'
+  - 'frequency'
+  - 'exclude_all'
+```
+
+The imputation options are:
+
+```yaml
+imputation_methods:
+  - "CSDI"
+  - "SAITS"
+```
+
+
+The feature-filtering options are:
+
+```yaml
+feature_filtering:
+  - 'Full'
+  - 'Gate'
+  - 'Pearson'
+  - 'MI'
+  - 'CCF'
+```
+
+The active machine-learning model list is:
+
+```yaml
+ml_model:
+  - 'naive'
+  - 'linear_regression'
+  - 'random_forest'
+  - 'elm'
+  - 'xgboost'
+  - 'lightgbm' 
+  - 'catboost' 
+  - 'gradient_boosted_decision_trees'
+  - 'version_extreme_random_forest' 
+```
+
+The active deep-learning model list is:
+
+```yaml
+deep_model:
+  - 'lstm'
+  - 'cnn'
+  - 'rnn'
+  - 'cnn_rnn'
+  - 'cnn_lstm'
+  - 'gru'
+  - 'tcn'
+  - 'ffnn'
+```
+
+
+The Dash interface combines the machine-learning and deep-learning model lists into the visible model-selection workflow. The separate lists are used to identify models that depend on sequential data and models that do not.
+
+# `config/model_config.yaml`
+
+This file defines the forecasting setup and hyperparameter search space.
+
+The forecasting setup is controlled by:
+
+```yaml
+prediction_config:
+  timesteps: 168
+  steps_ahead: 144
+```
+
+For 10-minute data, this corresponds to 168 input time steps and 144 forecast steps ahead.
+
+The same file also defines:
+
+```text
+train, validation, trial, and test sizes
+number of Optuna trials
+number of retest trials
+trial and final training epochs
+early-stopping patience
+batch-size options
+random seed
+lag-gate hyperparameters
+model-size ranges
+optimizer settings
+learning-rate schedule
+Optuna pruning settings
+```
+
+To change the forecast horizon, edit:
+
+```yaml
+prediction_config:
+  timesteps: ...
+  steps_ahead: ...
+```
+
+To change the number of hyperparameter trials, edit:
+
+```yaml
+training:
+  n_trials: ...
+```
+
+For a quick test run, reduce the training values:
+
+```yaml
+training:
+  n_trials: 5
+  trial_epochs: 2
+  final_epochs: 5
+  trial_patience: 2
+  final_patience: 3
+```
+
+The default configuration may be computationally heavy. Full experiments should use the intended thesis-scale configuration. Quick tests should use smaller values.
 
 ## Dataset paths
 
@@ -266,133 +392,6 @@ Not every experiment creates all filtering figures. A run with `Full` filtering 
 
 
 These figures are loaded by `app.py` and displayed in the interface.
-
-## `config/config.yaml`
-
-This file defines available pipeline choices, dataset paths, categorical treatment methods, imputation methods, feature-creation options, feature-filtering methods, and model lists.
-
-The categorical treatment options are:
-
-```yaml
-categorical_methods:
-  - 'onehot'
-  - 'label'
-  - 'ordinal'
-  - 'binary'
-  - 'frequency'
-  - 'exclude_all'
-```
-
-The imputation options are:
-
-```yaml
-imputation_methods:
-  - "CSDI"
-  - "SAITS"
-```
-
-
-The feature-filtering options are:
-
-```yaml
-feature_filtering:
-  - 'Full'
-  - 'Gate'
-  - 'Pearson'
-  - 'MI'
-  - 'CCF'
-```
-
-The active machine-learning model list is:
-
-```yaml
-ml_model:
-  - 'naive'
-  - 'linear_regression'
-  - 'random_forest'
-  - 'elm'
-  - 'xgboost'
-  - 'lightgbm' 
-  - 'catboost' 
-  - 'gradient_boosted_decision_trees'
-  - 'version_extreme_random_forest' 
-```
-
-The active deep-learning model list is:
-
-```yaml
-deep_model:
-  - 'lstm'
-  - 'cnn'
-  - 'rnn'
-  - 'cnn_rnn'
-  - 'cnn_lstm'
-  - 'gru'
-  - 'tcn'
-  - 'ffnn'
-```
-
-
-The Dash interface combines the machine-learning and deep-learning model lists into the visible model-selection workflow. The separate lists are used to identify models that depend on sequential data and models that do not.
-
-## `config/model_config.yaml`
-
-This file defines the forecasting setup and hyperparameter search space.
-
-The forecasting setup is controlled by:
-
-```yaml
-prediction_config:
-  timesteps: 168
-  steps_ahead: 144
-```
-
-For 10-minute data, this corresponds to 168 input time steps and 144 forecast steps ahead.
-
-The same file also defines:
-
-```text
-train, validation, trial, and test sizes
-number of Optuna trials
-number of retest trials
-trial and final training epochs
-early-stopping patience
-batch-size options
-random seed
-lag-gate hyperparameters
-model-size ranges
-optimizer settings
-learning-rate schedule
-Optuna pruning settings
-```
-
-To change the forecast horizon, edit:
-
-```yaml
-prediction_config:
-  timesteps: ...
-  steps_ahead: ...
-```
-
-To change the number of hyperparameter trials, edit:
-
-```yaml
-training:
-  n_trials: ...
-```
-
-For a quick test run, reduce the training values:
-
-```yaml
-training:
-  n_trials: 5
-  trial_epochs: 2
-  final_epochs: 5
-  trial_patience: 2
-  final_patience: 3
-```
-
-The default configuration may be computationally heavy. Full experiments should use the intended thesis-scale configuration. Quick tests should use smaller values.
 
 
 ## Pipeline steps
