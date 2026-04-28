@@ -108,14 +108,9 @@ The project uses two main configuration files:
 config/config.yaml
 config/model_config.yaml
 ```
-
-`config/config.yaml` defines dataset paths, interface-level choices, categorical treatment methods, feature-filtering methods, and model lists.
-
-`config/model_config.yaml` defines the forecasting setup and training configuration. It includes the number of input lags, number of forecast steps ahead, train-validation-test split sizes, Optuna settings, model hyperparameter ranges, and lag-gate settings.
-
 #### `config/config.yaml`
 
-This file defines available pipeline choices, dataset paths, categorical treatment methods, imputation methods, feature-creation options, feature-filtering methods, and model lists.
+This file defines available pipeline choices, dataset paths, categorical treatment methods, imputation methods, feature-filtering methods, and model lists.
 
 The categorical treatment options are:
 
