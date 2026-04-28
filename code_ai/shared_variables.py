@@ -1,0 +1,46 @@
+DATA = {}
+DATA_Y ={}
+DATA_t = {}
+DATA_p = {}
+SOLAR = False
+data_input = None
+data_out = None
+seq_reduction = None
+metadata = None
+is_sequence = False
+TIMESTEPS = None
+STEPS_AHEAD = None
+TRIAL_SPLIT = None
+VALIDATION_SPLIT = None
+TEST_SPLIT = None
+N_TRIALS = None
+N_JOBS = None
+TRIAL_EPOCHS = None
+FINAL_EPOCHS = None
+TRIAL_PATIENCE = None
+FINAL_PATIENCE = None
+BATCH_SIZE_OPTIONS = None
+RANDOM_SEED = None
+KEEP_FRAC = None
+UNITS_MAP = None
+
+OPTIMIZER_CONFIG = None
+HYPERPARAMETER_SPACE = None
+RETEST_TRIALS = None
+CPUS = None
+LR_SCHEDULE = None
+OPTUNA_CONFIG = None
+CACHE_PATH = None
+
+outliers_method = None
+model_type = None
+input_features = None
+output_variable = None
+feature_filtering_method = "Full"
+size_data = None
+scaler_type= None
+y_scaler = None
+
+score_data = None
+DECAY = None
+OUTPUT_DIR = None
