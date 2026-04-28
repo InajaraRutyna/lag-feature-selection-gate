@@ -1,4 +1,4 @@
-# Gated Lag and Feature Selection for SCADA-Based Renewable Energy Forecasting
+# Gated Lag and Feature Selection for SCADA-Based Wind and Solar Power Forecasting
 
 This repository contains the Python implementation associated with the Ph.D. thesis:
 
@@ -77,35 +77,6 @@ Install the required packages:
 pip install -r requirements.txt
 ```
 
-The current `requirements.txt` includes the main dependencies used by the project:
-
-```text
-pandas
-openpyxl
-tqdm
-numpy
-hpelm
-optuna
-chardet
-category_encoders
-dash
-dash_bootstrap_components
-xgboost
-lightgbm
-catboost
-permetrics
-psutil
-torch
-vmdpy
-pypots
-```
-
-If `torch` or `pypots` fails during installation, install PyTorch first using the command recommended for your operating system and hardware. Then run:
-
-```bash
-pip install -r requirements.txt
-```
-
 ## Running the interface
 
 The intended way to run the project is through the Dash application:
@@ -119,43 +90,6 @@ After starting the app, open the local address printed in the terminal. In most 
 ```text
 http://127.0.0.1:8050
 ```
-
-The interface is used to configure and run the training pipeline. It includes renewable-energy case selection, model selection, filtering-method selection, and execution of the forecasting pipeline.
-
-The interface uses files from:
-
-```text
-code_visual/
-assets/
-fig/
-```
-
-The visual app calls the training pipeline implemented in `main.py`.
-
-## Running the pipeline without the interface
-
-The pipeline can also be run directly:
-
-```bash
-python main.py
-```
-
-When `main.py` is executed directly, the code opens a file-selection window. Select a prepared `.pkl` dataset from the configured inserted-datasets directory.
-
-The inserted-datasets directory is defined in:
-
-```text
-config/config.yaml
-```
-
-By default, the path is:
-
-```yaml
-datasets:
-  inserted_datasets_dir: "../data/inserted_datasets"
-```
-
-If your data are stored elsewhere, edit this path before running the pipeline.
 
 ## Running all configured models
 
