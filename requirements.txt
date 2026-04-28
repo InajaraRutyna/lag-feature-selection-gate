@@ -16,3 +16,4 @@ psutil
 torch
 vmdpy
 pypots
+pywt
