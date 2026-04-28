@@ -390,32 +390,6 @@ For each selected model, the pipeline:
 27. Returns metrics, selected lag-feature information, best hyperparameters, and hyperparameter-search summaries.
 
 
-### Result saving
-
-After each model finishes, the interface writes the returned results to an Excel workbook in the experiment-output folder.
-
-Each experiment writes outputs to a subfolder inside:
-
-```text
-tests/
-```
-
-A typical experiment folder contains:
-
-```text
-experiment-output-folder/
-├── metrics_results_*.xlsx
-├── capacity.png
-├── <model_name>_predictions.png
-├── logits.png
-├── logits_1.png
-
-```
-
-The Excel workbook stores numerical metrics and hyperparameter information. The `.png` files store the capacity plot, prediction plots, and lag-feature filtering maps generated during the run.
-
-Not every run creates every figure. The saved figures depend on the selected model, selected filtering method, and whether the corresponding plotting function is called.
-
 ## Result paths and generated figures
 
 Experiment results are saved under:
