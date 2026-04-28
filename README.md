@@ -311,6 +311,111 @@ Before running an experiment, check that:
 4. the repository has write permission for the tests/ output directory.
 ```
 
+## Pipeline steps
+
+The project is run from `app.py`. The Dash interface controls the full workflow. It loads data, collects user selections, saves processed datasets, starts model execution, streams logs, and writes results.
+
+The pipeline has three stages.
+
+### Dataset preparation in the Dash interface
+
+The interface first loads either a raw dataset or an existing processed `.pkl` file.
+
+During this stage, the interface:
+
+1. Reads data from the configured raw-data or inserted-data directory.
+2. Displays dataframe information, column names, and preview rows.
+3. Detects object-type columns and empty columns.
+4. Lets the user categorize or exclude non-numeric columns.
+5. Lets the user select input features.
+6. Lets the user select the output variable.
+7. Lets the user select the feature-filtering method.
+8. Lets the user select one or more forecasting models.
+9. Saves the processed dataset and metadata as a `.pkl` file.
+
+The saved `.pkl` file is stored in the directory configured by:
+
+```yaml
+datasets:
+  inserted_datasets_dir: "../data/inserted_datasets"
+```
+### Lag-feature selection
+
+The repository supports several input-selection modes.
+
+`Full` keeps the complete lag-feature representation.
+
+`Gate` applies the gated lag-feature selection mechanism.
+
+`Pearson` applies correlation-based filtering.
+
+`MI` applies mutual-information-based filtering.
+
+`CCF` applies cross-correlation-based filtering.
+
+The selected lag-feature mask is applied before model training. For non-sequential models, the retained lag-feature tensor is flattened. For sequence models, the lag-feature structure is preserved.
+
+### Model execution
+
+After the user starts the run from the interface, the selected models are executed one by one.
+
+For each selected model, the pipeline:
+
+1. Loads `config/config.yaml` and `config/model_config.yaml`.
+2. Reads the processed dataframe and metadata from the interface state.
+3. Adds the output variable to the input-feature list when needed.
+4. Creates an internal output column with the prefix `output_`.
+5. Converts full zero-valued weeks in the output signal to missing values.
+6. Averages duplicated timestamps.
+7. Detects missing values and outliers in the selected input data.
+8. Imputes missing input values.
+9. Estimates the capacity signal from the output series.
+10. Normalizes the output signal by the estimated capacity.
+11. Constructs supervised lagged input-output sequences.
+12. Scales the multi-step target array.
+13. Splits the target array into training, validation, and test subsets.
+14. Loads an existing lag-feature mask when available.
+15. Scales the lagged input tensor.
+16. Applies the selected filtering method: `Full`, `Gate`, `Pearson`, `MI`, or `CCF`.
+17. Reduces the lag-feature tensor according to the selected mask.
+18. Splits the filtered input tensor into training, validation, and test subsets.
+19. Flattens the input tensor for non-sequential models.
+20. Trains the selected model or computes the naive baseline.
+21. Generates direct multi-step forecasts.
+22. Inverse-transforms predictions to the normalized output scale.
+23. Computes model-level training and validation errors.
+24. Computes dataset-level test errors for each forecast step.
+25. Converts predictions and observations back to the original capacity-scaled units.
+26. Saves generated figures in the experiment-output folder.
+27. Returns metrics, selected lag-feature information, best hyperparameters, and hyperparameter-search summaries.
+
+
+### Result saving
+
+After each model finishes, the interface writes the returned results to an Excel workbook in the experiment-output folder.
+
+Each experiment writes outputs to a subfolder inside:
+
+```text
+tests/
+```
+
+A typical experiment folder contains:
+
+```text
+experiment-output-folder/
+├── metrics_results_*.xlsx
+├── capacity.png
+├── <model_name>_predictions.png
+├── logits.png
+├── logits_1.png
+
+```
+
+The Excel workbook stores numerical metrics and hyperparameter information. The `.png` files store the capacity plot, prediction plots, and lag-feature filtering maps generated during the run.
+
+Not every run creates every figure. The saved figures depend on the selected model, selected filtering method, and whether the corresponding plotting function is called.
+
 ## Result paths and generated figures
 
 Experiment results are saved under:
@@ -388,111 +493,6 @@ Not every experiment creates all filtering figures. A run with `Full` filtering 
 
 These figures are loaded by `app.py` and displayed in the interface.
 
-
-## Pipeline steps
-
-The project is run from `app.py`. The Dash interface controls the full workflow. It loads data, collects user selections, saves processed datasets, starts model execution, streams logs, and writes results.
-
-The pipeline has three stages.
-
-### 1. Dataset preparation in the Dash interface
-
-The interface first loads either a raw dataset or an existing processed `.pkl` file.
-
-During this stage, the interface:
-
-1. Reads data from the configured raw-data or inserted-data directory.
-2. Displays dataframe information, column names, and preview rows.
-3. Detects object-type columns and empty columns.
-4. Lets the user categorize or exclude non-numeric columns.
-5. Lets the user select input features.
-6. Lets the user select the output variable.
-7. Lets the user select the feature-filtering method.
-8. Lets the user select one or more forecasting models.
-9. Saves the processed dataset and metadata as a `.pkl` file.
-
-The saved `.pkl` file is stored in the directory configured by:
-
-```yaml
-datasets:
-  inserted_datasets_dir: "../data/inserted_datasets"
-```
-
-### 2. Model execution
-
-After the user starts the run from the interface, the selected models are executed one by one.
-
-For each selected model, the pipeline:
-
-1. Loads `config/config.yaml` and `config/model_config.yaml`.
-2. Reads the processed dataframe and metadata from the interface state.
-3. Adds the output variable to the input-feature list when needed.
-4. Creates an internal output column with the prefix `output_`.
-5. Converts full zero-valued weeks in the output signal to missing values.
-6. Averages duplicated timestamps.
-7. Detects missing values and outliers in the selected input data.
-8. Imputes missing input values.
-9. Estimates the capacity signal from the output series.
-10. Normalizes the output signal by the estimated capacity.
-11. Constructs supervised lagged input-output sequences.
-12. Scales the multi-step target array.
-13. Splits the target array into training, validation, and test subsets.
-14. Loads an existing lag-feature mask when available.
-15. Scales the lagged input tensor.
-16. Applies the selected filtering method: `Full`, `Gate`, `Pearson`, `MI`, or `CCF`.
-17. Reduces the lag-feature tensor according to the selected mask.
-18. Splits the filtered input tensor into training, validation, and test subsets.
-19. Flattens the input tensor for non-sequential models.
-20. Trains the selected model or computes the naive baseline.
-21. Generates direct multi-step forecasts.
-22. Inverse-transforms predictions to the normalized output scale.
-23. Computes model-level training and validation errors.
-24. Computes dataset-level test errors for each forecast step.
-25. Converts predictions and observations back to the original capacity-scaled units.
-26. Saves generated figures in the experiment-output folder.
-27. Returns metrics, selected lag-feature information, best hyperparameters, and hyperparameter-search summaries.
-
-### 3. Result saving
-
-After each model finishes, the interface writes the returned results to an Excel workbook in the experiment-output folder.
-
-Each experiment writes outputs to a subfolder inside:
-
-```text
-tests/
-```
-
-A typical experiment folder contains:
-
-```text
-experiment-output-folder/
-├── metrics_results_*.xlsx
-├── capacity.png
-├── <model_name>_predictions.png
-├── logits.png
-├── logits_1.png
-
-```
-
-The Excel workbook stores numerical metrics and hyperparameter information. The `.png` files store the capacity plot, prediction plots, and lag-feature filtering maps generated during the run.
-
-Not every run creates every figure. The saved figures depend on the selected model, selected filtering method, and whether the corresponding plotting function is called.
-
-## Lag-feature selection
-
-The repository supports several input-selection modes.
-
-`Full` keeps the complete lag-feature representation.
-
-`Gate` applies the gated lag-feature selection mechanism.
-
-`Pearson` applies correlation-based filtering.
-
-`MI` applies mutual-information-based filtering.
-
-`CCF` applies cross-correlation-based filtering.
-
-The selected lag-feature mask is applied before model training. For non-sequential models, the retained lag-feature tensor is flattened. For sequence models, the lag-feature structure is preserved.
 
 
 ## Evaluation metrics
