@@ -113,7 +113,7 @@ config/model_config.yaml
 
 `config/model_config.yaml` defines the forecasting setup and training configuration. It includes the number of input lags, number of forecast steps ahead, train-validation-test split sizes, Optuna settings, model hyperparameter ranges, and lag-gate settings.
 
-# `config/config.yaml`
+### `config/config.yaml`
 
 This file defines available pipeline choices, dataset paths, categorical treatment methods, imputation methods, feature-creation options, feature-filtering methods, and model lists.
 
@@ -181,7 +181,7 @@ deep_model:
 
 The Dash interface combines the machine-learning and deep-learning model lists into the visible model-selection workflow. The separate lists are used to identify models that depend on sequential data and models that do not.
 
-# `config/model_config.yaml`
+### `config/model_config.yaml`
 
 This file defines the forecasting setup and hyperparameter search space.
 
