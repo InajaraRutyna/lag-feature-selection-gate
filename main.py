@@ -366,8 +366,8 @@ def main(**kwargs):
             if np.isnan(predictions).any():
                 predictions = (
                     pd.DataFrame(predictions)
-                    .fillna(method="ffill", axis=1)
-                    .fillna(method="bfill", axis=1)
+                    .ffill(axis=1)
+                    .bfill(axis=1)
                     .to_numpy(dtype=np.float32)
                 )
 
